@@ -30,7 +30,12 @@ Chessboard::~Chessboard()
 	delete mp_SolutionList;
 }
 
-void Chessboard::PrintBoard()
+bool Chessboard::InBounds(int row, int column) const {
+	return 0 <= row && row < m_Rows
+		&& 0 <= column && column < m_Columns;
+}
+
+void Chessboard::PrintBoard() const
 {
 	for (int i = 0; i < m_Rows; i++) {
 		for (int j = 0; j < m_Columns; j++)
@@ -52,7 +57,7 @@ void Chessboard::Init()
 
 void Chessboard::PlacePiece(int type, int row, int column)
 {
-	if (row >= m_Rows || column >= m_Columns || row < 0 || column < 0) {
+	if (!InBounds(row,column)) {
 		cout << "Can't place piece, it's out of bounds.\n";
 		return;
 	}
@@ -71,7 +76,7 @@ void Chessboard::PlacePiece(int type, int row, int column)
 
 void Chessboard::RemovePiece(int type, int row, int column)
 {
-	if (row >= m_Rows || column >= m_Columns || row < 0 || column < 0) {
+	if (!InBounds(row,column)) {
 		cout << "Can't place piece, it's out of bounds.\n";
 		return;
 	}
@@ -89,35 +94,25 @@ void Chessboard::RemovePiece(int type, int row, int column)
 void Chessboard::LeftDiagonal(int row, int column, bool value)
 {
 	int r = row, c = column;
-	while (r < m_Rows && c < m_Columns) {
-		ChangeCell(r, c, value);
-		r++;
-		c++;
-	}
+	while (InBounds(r,c))
+		ChangeCell(r++, c++, value);
+		
 	r = row-1;
 	c = column-1;
-	while (r >= 0 && c >= 0) {
-		ChangeCell(r, c, value);
-		r--;
-		c--;
-	}
+	while (InBounds(r,c))
+		ChangeCell(r--, c--, value);
 }
 
 void Chessboard::RightDiagonal(int row, int column, bool value)
 {
 	int r = row, c = column;
-	while (r >= 0 && c < m_Columns) {
-		ChangeCell(r, c, value);
-		r--;
-		c++;
-	}
+	while (InBounds(r,c))
+		ChangeCell(r--, c++, value);
+		
 	r = row+1;
 	c = column-1;
-	while (r < m_Rows && c >= 0) {
-		ChangeCell(r, c, value);
-		r++;
-		c--;
-	}
+	while (InBounds(r,c))
+		ChangeCell(r++, c--, value);
 	
 }
 
@@ -169,13 +164,13 @@ void Chessboard::PrintEightQueensSolution()
 void Chessboard::ChangeCell(int row, int column, bool value)
 {
 	if (value == 0) {
-		mpp_TheBoard[row][column].count++;
+		++mpp_TheBoard[row][column].count;
 		mpp_TheBoard[row][column].available = value;
 	}
 
 	else {
 		if (mpp_TheBoard[row][column].count > 0)
-			mpp_TheBoard[row][column].count--;
+			--mpp_TheBoard[row][column].count;
 		if (mpp_TheBoard[row][column].count == 0)
 			mpp_TheBoard[row][column].available = value;
 	}

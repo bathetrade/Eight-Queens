@@ -27,7 +27,8 @@ public:
 	Chessboard();
 	Chessboard(int rows, int columns);
 	~Chessboard();
-	void PrintBoard();
+	bool InBounds(int row, int column) const;
+	void PrintBoard() const;
 	void PlacePiece(int type, int row, int column);
 	void RemovePiece(int type, int row, int column);
 	void PrintEightQueensSolution();
