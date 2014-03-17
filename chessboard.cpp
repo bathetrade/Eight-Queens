@@ -9,7 +9,7 @@ Chessboard::Chessboard()
 
 }
 
-Chessboard::Chessboard(short rows, short columns)
+Chessboard::Chessboard(int rows, int columns)
 {
 	m_Rows    = rows;
 	m_Columns = columns;
@@ -22,7 +22,7 @@ Chessboard::Chessboard(short rows, short columns)
 
 Chessboard::~Chessboard()
 {
-	for (short i = 0; i < m_Rows; i++)
+	for (int i = 0; i < m_Rows; i++)
 		delete[] mpp_TheBoard[i];
 	delete[] mpp_TheBoard;
 	mpp_TheBoard = 0;
@@ -32,8 +32,8 @@ Chessboard::~Chessboard()
 
 void Chessboard::PrintBoard()
 {
-	for (short i = 0; i < m_Rows; i++) {
-		for (short j = 0; j < m_Columns; j++)
+	for (int i = 0; i < m_Rows; i++) {
+		for (int j = 0; j < m_Columns; j++)
 			cout<<mpp_TheBoard[i][j].available<<" ";
 		cout << endl;
 	}
@@ -41,16 +41,16 @@ void Chessboard::PrintBoard()
 
 void Chessboard::Init()
 {
-	mp_SolutionList = new short[m_Rows];
+	mp_SolutionList = new int[m_Rows];
 	mpp_TheBoard = new ChessCell*[m_Rows];
 
-	for (short i = 0; i < m_Rows; i++) {
+	for (int i = 0; i < m_Rows; i++) {
 		mpp_TheBoard[i]    = new ChessCell[m_Columns];
 		mp_SolutionList[i] = -1;
 	}
 }
 
-void Chessboard::PlacePiece(int type, short row, short column)
+void Chessboard::PlacePiece(int type, int row, int column)
 {
 	if (row >= m_Rows || column >= m_Columns || row < 0 || column < 0) {
 		cout << "Can't place piece, it's out of bounds.\n";
@@ -69,7 +69,7 @@ void Chessboard::PlacePiece(int type, short row, short column)
 	}
 }
 
-void Chessboard::RemovePiece(int type, short row, short column)
+void Chessboard::RemovePiece(int type, int row, int column)
 {
 	if (row >= m_Rows || column >= m_Columns || row < 0 || column < 0) {
 		cout << "Can't place piece, it's out of bounds.\n";
@@ -86,9 +86,9 @@ void Chessboard::RemovePiece(int type, short row, short column)
 	}
 }
 
-void Chessboard::LeftDiagonal(short row, short column, bool value)
+void Chessboard::LeftDiagonal(int row, int column, bool value)
 {
-	short r = row, c = column;
+	int r = row, c = column;
 	while (r < m_Rows && c < m_Columns) {
 		ChangeCell(r, c, value);
 		r++;
@@ -103,9 +103,9 @@ void Chessboard::LeftDiagonal(short row, short column, bool value)
 	}
 }
 
-void Chessboard::RightDiagonal(short row, short column, bool value)
+void Chessboard::RightDiagonal(int row, int column, bool value)
 {
-	short r = row, c = column;
+	int r = row, c = column;
 	while (r >= 0 && c < m_Columns) {
 		ChangeCell(r, c, value);
 		r--;
@@ -121,7 +121,7 @@ void Chessboard::RightDiagonal(short row, short column, bool value)
 	
 }
 
-void Chessboard::VerticalHorizontal(short row, short column, bool value)
+void Chessboard::VerticalHorizontal(int row, int column, bool value)
 {
 
 	for (int r = 0; r < m_Rows; r++) 
@@ -131,7 +131,7 @@ void Chessboard::VerticalHorizontal(short row, short column, bool value)
 		ChangeCell(row, c, value);
 }
 
-bool Chessboard::PlaceQueenRow(short row)
+bool Chessboard::PlaceQueenRow(int row)
 {
 	for (int col = 0; col < m_Columns; col++) {
 		if (row == m_Rows)  //Solved
@@ -166,7 +166,7 @@ void Chessboard::PrintEightQueensSolution()
 	else cout << "No solution.\n";
 }
 
-void Chessboard::ChangeCell(short row, short column, bool value)
+void Chessboard::ChangeCell(int row, int column, bool value)
 {
 	if (value == 0) {
 		mpp_TheBoard[row][column].count++;

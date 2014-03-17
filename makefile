@@ -1,2 +1,2 @@
 all:
-	g++ queens.cpp chessboard.cpp -o queens
+	g++ -std=c++11 queens.cpp chessboard.cpp -o queens

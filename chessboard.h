@@ -4,9 +4,9 @@
 
 struct ChessCell
 {
+	int count;
 	bool available;
-	short count;
-	ChessCell() { available = 1; count = 0; }
+	ChessCell() { available = true; count = 0; }
 };
 
 
@@ -14,22 +14,22 @@ class Chessboard
 {
 private:
 	ChessCell **mpp_TheBoard;
-	short m_Rows, m_Columns;
-	short *mp_SolutionList;
+	int m_Rows, m_Columns;
+	int *mp_SolutionList;
 
 	void Init();
-	void RightDiagonal(short row, short column, bool value);
-	void LeftDiagonal(short row, short column, bool value);
-	void VerticalHorizontal(short row, short column, bool value);
-	bool PlaceQueenRow(short row);
-	void ChangeCell(short row, short column, bool value);
+	void RightDiagonal(int row, int column, bool value);
+	void LeftDiagonal(int row, int column, bool value);
+	void VerticalHorizontal(int row, int column, bool value);
+	bool PlaceQueenRow(int row);
+	void ChangeCell(int row, int column, bool value);
 public:
 	Chessboard();
-	Chessboard(short rows, short columns);
+	Chessboard(int rows, int columns);
 	~Chessboard();
 	void PrintBoard();
-	void PlacePiece(int type, short row, short column);
-	void RemovePiece(int type, short row, short column);
+	void PlacePiece(int type, int row, int column);
+	void RemovePiece(int type, int row, int column);
 	void PrintEightQueensSolution();
 };
 
