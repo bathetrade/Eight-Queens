@@ -1,6 +1,10 @@
 #ifndef CHESS_H
 #define CHESS_H
-#define QUEEN 0
+
+#include <memory>
+#include <vector>
+
+enum PieceType : char { QUEEN };
 
 struct ChessCell
 {
@@ -13,9 +17,9 @@ struct ChessCell
 class Chessboard
 {
 private:
-	ChessCell **mpp_TheBoard;
+	std::vector<std::unique_ptr<ChessCell[]>> Board;
 	int m_Rows, m_Columns;
-	int *mp_SolutionList;
+	std::vector<int> SolutionList;
 
 	void Init();
 	void RightDiagonal(int row, int column, bool value);
@@ -26,11 +30,10 @@ private:
 public:
 	Chessboard();
 	Chessboard(int rows, int columns);
-	~Chessboard();
 	bool InBounds(int row, int column) const;
 	void PrintBoard() const;
-	void PlacePiece(int type, int row, int column);
-	void RemovePiece(int type, int row, int column);
+	void PlacePiece(PieceType type, int row, int column);
+	void RemovePiece(PieceType type, int row, int column);
 	void PrintEightQueensSolution();
 };
 

@@ -1,33 +1,21 @@
 #include "chessboard.h"
 #include <iostream>
+#include <memory>
+#include <vector>
 using namespace std;
 
-Chessboard::Chessboard()
+Chessboard::Chessboard() : m_Rows(8), m_Columns(8)
 {
-	m_Rows = m_Columns = 8;
 	Init();
-
 }
 
-Chessboard::Chessboard(int rows, int columns)
+Chessboard::Chessboard(int rows, int columns) : m_Rows(rows), m_Columns(columns)
 {
-	m_Rows    = rows;
-	m_Columns = columns;
 	if (m_Rows < 1)
 		m_Rows = 1;
 	if (m_Columns < 1)
 		m_Columns = 1;
 	Init();
-}
-
-Chessboard::~Chessboard()
-{
-	for (int i = 0; i < m_Rows; i++)
-		delete[] mpp_TheBoard[i];
-	delete[] mpp_TheBoard;
-	mpp_TheBoard = 0;
-	
-	delete mp_SolutionList;
 }
 
 bool Chessboard::InBounds(int row, int column) const {
@@ -39,23 +27,23 @@ void Chessboard::PrintBoard() const
 {
 	for (int i = 0; i < m_Rows; i++) {
 		for (int j = 0; j < m_Columns; j++)
-			cout<<mpp_TheBoard[i][j].available<<" ";
+			cout<<Board[i][j].available<<" ";
 		cout << endl;
 	}
 }
 
 void Chessboard::Init()
 {
-	mp_SolutionList = new int[m_Rows];
-	mpp_TheBoard = new ChessCell*[m_Rows];
+	Board.resize(m_Rows);
+	SolutionList.resize(m_Rows);
 
-	for (int i = 0; i < m_Rows; i++) {
-		mpp_TheBoard[i]    = new ChessCell[m_Columns];
-		mp_SolutionList[i] = -1;
+	for (int i=0; i<m_Rows; ++i) {
+		Board[i] = unique_ptr<ChessCell[]>(new ChessCell[m_Columns]);
+		SolutionList[i] = -1;
 	}
 }
 
-void Chessboard::PlacePiece(int type, int row, int column)
+void Chessboard::PlacePiece(PieceType type, int row, int column)
 {
 	if (!InBounds(row,column)) {
 		cout << "Can't place piece, it's out of bounds.\n";
@@ -74,7 +62,7 @@ void Chessboard::PlacePiece(int type, int row, int column)
 	}
 }
 
-void Chessboard::RemovePiece(int type, int row, int column)
+void Chessboard::RemovePiece(PieceType type, int row, int column)
 {
 	if (!InBounds(row,column)) {
 		cout << "Can't place piece, it's out of bounds.\n";
@@ -131,16 +119,16 @@ bool Chessboard::PlaceQueenRow(int row)
 	for (int col = 0; col < m_Columns; col++) {
 		if (row == m_Rows)  //Solved
 			return true;
-		if (mpp_TheBoard[row][col].available) {
+		if (Board[row][col].available) {
 			PlacePiece(QUEEN, row, col);
 			if (PlaceQueenRow(row+1)) {
 				cout << "(" << row << ", " << col << ")\n";
-				mp_SolutionList[row] = col;
+				SolutionList[row] = col;
 				return true;
 			}
 			else {
 				RemovePiece(QUEEN, row, col);
-				mp_SolutionList[row] = -1;
+				SolutionList[row] = -1;
 			}
 		}
 	}
@@ -151,9 +139,9 @@ void Chessboard::PrintEightQueensSolution()
 	if (PlaceQueenRow(0)) {
 		for (int r = 0; r < m_Rows; r++) {
 			for (int c = 0; c < m_Columns; c++) {
-				if (mp_SolutionList[r] == c)
+				if (SolutionList[r] == c)
 					cout << "q ";
-				else cout << mpp_TheBoard[r][c].available << " ";
+				else cout << Board[r][c].available << " ";
 			}
 			cout << endl;
 		}
@@ -164,14 +152,14 @@ void Chessboard::PrintEightQueensSolution()
 void Chessboard::ChangeCell(int row, int column, bool value)
 {
 	if (value == 0) {
-		++mpp_TheBoard[row][column].count;
-		mpp_TheBoard[row][column].available = value;
+		++Board[row][column].count;
+		Board[row][column].available = value;
 	}
 
 	else {
-		if (mpp_TheBoard[row][column].count > 0)
-			--mpp_TheBoard[row][column].count;
-		if (mpp_TheBoard[row][column].count == 0)
-			mpp_TheBoard[row][column].available = value;
+		if (Board[row][column].count > 0)
+			--Board[row][column].count;
+		if (Board[row][column].count == 0)
+			Board[row][column].available = value;
 	}
 }
